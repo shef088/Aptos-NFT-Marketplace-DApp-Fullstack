@@ -158,15 +158,19 @@ const MyNFTs: React.FC = () => {
                     {nft.auction?.isExpired ? "Expired Auction": "Ongoing Auction"}
                   </Button>
                 ) : nft.for_sale ? (
-                  <Button type="link"  onClick={() => navigate(`/nft-detail/${nft.id}`)}>
+                  <Button type="primary" onClick={() => navigate(`/nft-detail/${nft.id}`)}>
                   Ongoing Sale
                 </Button>
                 ) : (
                   <>
-                    <Button type="link" onClick={() => handleSellClick(nft)}>
+                    <Button 
+                    type="primary"
+                    onClick={() => handleSellClick(nft)}>
                       Sell
                     </Button>
-                    <Button type="link" onClick={() => handleAuctionClick(nft)}>
+                    <Button 
+                    type="primary"
+                     onClick={() => handleAuctionClick(nft)}>
                       Auction
                     </Button>
                   </>
@@ -190,7 +194,7 @@ const MyNFTs: React.FC = () => {
       >
         {nft.description}
       </div>
-              <p>Owner: {truncateAddress(nft.owner)}</p>
+      <p style={{fontSize:"12px"}}>Owner: { nft.owner === account?.address && "You | "}{truncateAddress(nft.owner)}</p> 
               {nft.auction ?(
                   <p style={{ margin: "10px 0" }}>For Sale: Auction</p>
               ):(

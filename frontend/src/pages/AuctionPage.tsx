@@ -228,8 +228,7 @@ const AuctionsPage = () => {
                 <h4>{auction.nftMetadata.name}</h4>
                 <p>{auction.nftMetadata.description}</p>
                 <p>Rarity: {rarityLabels[auction.nftMetadata.rarity]}</p>
-                <p>Owner: { auction.nftMetadata.owner === account?.address && "You | "}{truncateAddress(auction.nftMetadata.owner)}</p>
-
+                <p style={{fontSize:"12px"}}>Owner: { auction.nftMetadata.owner === account?.address && "You | "}{truncateAddress(auction.nftMetadata.owner)}</p> 
               </div>
             </Card>
           </Col>
