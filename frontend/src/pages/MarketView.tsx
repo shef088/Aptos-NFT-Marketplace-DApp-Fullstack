@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import ConfirmPurchaseModal from "../components/ConfirmPurchaseModal";
 import { rarityColors, rarityLabels } from "../utils/rarityUtils";  
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 const { Meta } = Card;
 
 const client = new AptosClient("https://fullnode.devnet.aptoslabs.com/v1");
@@ -207,7 +207,7 @@ const navigate= useNavigate()
               actions={[
                 nft.auction ? (
                   <Button 
-                    type="link"  
+                  type="primary"  
                     onClick={() => navigate(`/nft-detail/${nft.id}`)}
                   >
                     Ongoing Auction
@@ -222,7 +222,7 @@ const navigate= useNavigate()
                     </Button>
                   ) : (
                     <Button 
-                      type="link" 
+                      type="primary" 
                       onClick={() => handleBuyClick(nft)}
                     >
                       Buy
@@ -237,7 +237,16 @@ const navigate= useNavigate()
                 onClick={() => navigate(`/nft-detail/${nft.id}`)}
                 >
            
-              <Meta title={nft.name} description={`Price: ${nft.price} APT`} />
+           <Meta 
+    title={<Text style={{ fontWeight: "500"}}>{nft.name}</Text>} 
+    description={
+       nft.auction ? (
+          <Text type="secondary">Price: Auction</Text>
+       ) : (
+          <Text type="secondary">Price: {nft.price} APT</Text>
+         )
+       }
+  />
               <div
         style={{
           flexGrow: 1, // Allow description to take available space
@@ -246,13 +255,13 @@ const navigate= useNavigate()
           WebkitLineClamp: 2, // Limit description to 2 lines
           WebkitBoxOrient: "vertical", // Ensure truncation works
           display: "-webkit-box",
+           marginTop:"4px" 
         }}
       >
         {nft.description}
       </div>
               <p>ID: {nft.id}</p>
-              <p>Owner: { nft.owner === account?.address && "You | "}{truncateAddress(nft.owner)}</p>
-              </div>
+              <p style={{fontSize:"12px"}}>Owner: { nft.owner === account?.address && "You | "}{truncateAddress(nft.owner)}</p>              </div>
             </Card>
           </Col>
         ))}
