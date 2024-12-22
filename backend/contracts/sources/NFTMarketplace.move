@@ -582,10 +582,29 @@ module NFTMarketplace {
     }
   
 
-  // Helper function to check if one vector contains another
+    // New Helper function to convert to lowercase
+    fun vector_to_lower(input: &vector<u8>): vector<u8> {
+        let result = vector::empty<u8>();
+        let i = 0;
+        let input_len = vector::length<u8>(input);
+        while (i < input_len) {
+            let char = *vector::borrow<u8>(input, i);
+             if (char >= 65 && char <= 90) {
+                vector::push_back(&mut result, char + 32); // Convert to lowercase
+            } else {
+                vector::push_back(&mut result, char); // Keep the same character
+            };
+            i = i + 1;
+        };
+        result
+    }
+
+   // Helper function to check if one vector contains another
     fun vector_contains(haystack: &vector<u8>, needle: &vector<u8>): bool {
-        let haystack_len = vector::length(haystack);
-        let needle_len = vector::length(needle);
+        let haystack_lower = vector_to_lower(haystack);
+        let needle_lower = vector_to_lower(needle);
+        let haystack_len = vector::length<u8>(&haystack_lower);
+        let needle_len = vector::length<u8>(&needle_lower);
 
         if (needle_len == 0) {
             return true
@@ -598,7 +617,7 @@ module NFTMarketplace {
         while (i <= haystack_len - needle_len) {
             let  j = 0;
             while (j < needle_len) {
-                if (*vector::borrow(haystack, i + j) != *vector::borrow(needle, j)) {
+                if (*vector::borrow<u8>(&haystack_lower, i + j) != *vector::borrow<u8>(&needle_lower, j)) {
                     break
                 };
                 j = j + 1;

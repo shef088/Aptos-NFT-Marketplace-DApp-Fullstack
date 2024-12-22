@@ -10,7 +10,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 const { Meta } = Card;
 
 const client = new AptosClient("https://fullnode.devnet.aptoslabs.com/v1");
-const decodeSalesVolume = (encoded) => {
+const decodeSalesVolume = (encoded:any) => {
   // Assuming each encoded entry has 'time' and 'volume' properties
   const time = encoded.time; // Unix timestamp
   const volume = encoded.volume; // Trading volume
@@ -51,7 +51,7 @@ const Analytics = () => {
         console.log("transformedAnalytics::", transformedAnalytics);
     
         // Decode sales_volume_over_time into a readable format
-        const salesVolumeOverTime = transformedAnalytics.sales_volume_over_time.map((encoded) => {
+        const salesVolumeOverTime = transformedAnalytics.sales_volume_over_time.map((encoded:any) => {
           return decodeSalesVolume(encoded); // Decode each SalesVolumeEntry
         });
     

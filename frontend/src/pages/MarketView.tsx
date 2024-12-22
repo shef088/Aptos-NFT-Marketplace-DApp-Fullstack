@@ -5,7 +5,7 @@ import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { MARKET_PLACE_ADDRESS, MARKET_PLACE_NAME } from "../Constants";
 import { useNavigate } from "react-router-dom";
 import ConfirmPurchaseModal from "../components/ConfirmPurchaseModal";
-import { rarityColors, rarityLabels } from "../utils/rarityUtils";  
+import { rarityColors, rarityLabels, truncateAddress } from "../utils/rarityUtils";  
 
 const { Title, Text } = Typography;
 const { Meta } = Card;
@@ -27,9 +27,7 @@ type NFT = {
  
 
  
-const truncateAddress = (address: string, start = 6, end = 4) => {
-  return `${address.slice(0, start)}...${address.slice(-end)}`;
-};
+
 
 const MarketView: React.FC  = ( ) => {
     const { account } = useWallet();
@@ -215,7 +213,8 @@ const navigate= useNavigate()
                 ) : (
                   nft.owner === account?.address ? (
                     <Button 
-                      type="link" 
+                      type="primary" 
+                      danger
                       onClick={() => navigate(`/nft-detail/${nft.id}`)}
                     >
                       End Sale

@@ -281,7 +281,7 @@ const NavBar: React.FC<NavBarProps> = ({ onMintNFTClick }) => {
                     <WalletSelector />
                 )}
             </Space>
-            <style jsx="true">{`
+            <style>{`
         .desktop-menu {
           display: none;
         }

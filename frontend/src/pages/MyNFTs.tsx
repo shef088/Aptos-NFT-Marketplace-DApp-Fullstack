@@ -3,7 +3,7 @@ import { Typography, Card, Row, Col, Pagination, message, Button, Input, Modal, 
 import { AptosClient } from "aptos";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { MARKET_PLACE_ADDRESS, MARKET_PLACE_NAME } from "../Constants";
-const { Title } = Typography;
+const { Title, Text } = Typography;
 const { Meta } = Card;
 import { useNavigate } from "react-router-dom";
 import StartAuctionModal from "../components/StartAuctionModal";
@@ -153,34 +153,47 @@ const MyNFTs: React.FC = () => {
               </Tag>}
               cover={<img alt={nft.name} src={nft.uri} />}
               actions={[
-                nft.auction ? (
-                  <Button type="link"   disabled={nft.auction?.isExpired} onClick={() => navigate(`/nft-detail/${nft.id}`)}>
-                    {nft.auction?.isExpired ? "Expired Auction": "Ongoing Auction"}
-                  </Button>
-                ) : nft.for_sale ? (
-                  <Button type="primary" onClick={() => navigate(`/nft-detail/${nft.id}`)}>
-                  Ongoing Sale
-                </Button>
-                ) : (
-                  <>
-                    <Button 
-                    type="primary"
-                    onClick={() => handleSellClick(nft)}>
-                      Sell
-                    </Button>
-                    <Button 
-                    type="primary"
-                     onClick={() => handleAuctionClick(nft)}>
-                      Auction
-                    </Button>
-                  </>
-                )
-              ]}
+                <div style={{ display: 'flex',  alignItems:"center", justifyContent:"space-evenly" }}>
+                  {nft.auction ? (
+                      <Button type="link"  disabled={nft.auction?.isExpired} onClick={() => navigate(`/nft-detail/${nft.id}`)}>
+                          {nft.auction?.isExpired ? "Expired Auction": "Ongoing Auction"}
+                      </Button>
+                  ) : nft.for_sale ? (
+                      <Button type="primary" danger onClick={() => navigate(`/nft-detail/${nft.id}`)}>
+                          End Sale
+                      </Button>
+                      ) : (
+                          <>
+                              <Button 
+                               style={{width:"40%"}}
+                              type="primary"
+                              onClick={() => handleSellClick(nft)}>
+                                  Sell
+                              </Button>
+                              <Button 
+                              type="primary"
+                              style={{width:"40%"}}
+                               onClick={() => handleAuctionClick(nft)}>
+                                  Auction
+                              </Button>
+                          </>
+                      )
+                    }
+                </div>
+                ]}
               
             >
               <div onClick={() => navigate(`/nft-detail/${nft.id}`)}>
               <Meta 
-              title={nft.name} description={`Price: ${nft.price} APT`} />
+    title={<Text style={{ fontWeight: "500"}}>{nft.name}</Text>} 
+    description={
+       nft.auction ? (
+          <Text type="secondary">Price: Auction</Text>
+       ) : (
+          <Text type="secondary">Price: {nft.price} APT</Text>
+         )
+       }
+  />
               <p>ID: {nft.id}</p>
               <div
         style={{

@@ -21,6 +21,7 @@
     starting_bid: number;
     highest_bid: number;
     end_time: string;
+    isExpired: boolean;
     nftMetadata: {
       name: string;
       uri: string;

@@ -62,6 +62,7 @@ export const fetchNFTDataUtil = async (tokenId: string, account: string | undefi
     };
     } catch (error) {
         console.error(`destructurng auction data error`, error);
+        auction_data =null;
     }
     nft.auction= auction_data
     console.log("nft::", nft)
