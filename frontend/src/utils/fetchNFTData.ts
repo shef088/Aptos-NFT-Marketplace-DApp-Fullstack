@@ -44,7 +44,9 @@ export const fetchNFTDataUtil = async (tokenId: string, account: string | undefi
       rarity,
       price: price / 100000000, // Convert octas to APT
       for_sale,
-      owner,
+      owner: owner.startsWith('0x')
+      ? (owner.length === 66 ? owner : `0x0${owner.substring(2)}`)
+       : (owner.length === 63 ? `0x0${owner}` : `0x${owner}`),
       auction,
     };
     let auction_data =null;

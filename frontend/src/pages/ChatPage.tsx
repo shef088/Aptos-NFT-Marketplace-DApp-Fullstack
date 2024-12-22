@@ -24,14 +24,14 @@ const { Text, Title } = Typography;
 
 const client = new AptosClient("https://fullnode.devnet.aptoslabs.com/v1");
 
-interface Chat1 {
+interface Chat {
     id: string;
     participants: string[];
-    messages: Message1[];
+    messages: Message[];
     last_message_id: number;
 }
 
-interface Message1 {
+interface Message {
     id: number;
     sender: string;
     content: string;
@@ -45,9 +45,9 @@ const ChatPage: React.FC = () => {
     const [chatsLoading, setChatsLoading] = useState(false);
     const [messagesLoading, setMessagesLoading] = useState(false);
     const { account } = useWallet();
-    const [chats, setChats] = useState<Chat1[]>([]);
-    const [selectedChat, setSelectedChat] = useState<Chat1 | null>(null);
-    const [messages, setMessages] = useState<Message1[]>([]);
+    const [chats, setChats] = useState<Chat[]>([]);
+    const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
+    const [messages, setMessages] = useState<Message[]>([]);
     const [newMessage, setNewMessage] = useState("");
     const [recipientAddress, setRecipientAddress] = useState("");
     const [transactionStatus, setTransactionStatus] = useState<string | null>(null);
@@ -60,6 +60,12 @@ const ChatPage: React.FC = () => {
     const [chatId, setChatId] = useState<string | null>(null);
     const [showChatList, setShowChatList] = useState(true);
 
+      const compareAddresses = (address1: string | undefined, address2: string | undefined): boolean => {
+        if (!address1 || !address2) return false;
+        const normalizedAddress1 = address1.startsWith('0x') ? address1 : `0x${address1}`;
+        const normalizedAddress2 = address2.startsWith('0x') ? address2 : `0x${address2}`;
+        return normalizedAddress1 === normalizedAddress2
+    }
 
     useEffect(() => {
         const checkChatAndInitialize = async () => {
@@ -197,13 +203,14 @@ const ChatPage: React.FC = () => {
                 type_arguments: [],
                 arguments: [account.address, chatId],
             }) as any;
+            console.log("messages::", response)
             if (response && response.length > 0 && response[0].length > 0) {
                 const decryptedMessages = await Promise.all(response[0].map(async (msg: any) => ({
                     ...msg,
                     content: decryptMessage(msg.content),
                 })));
                 setMessagesLoading(true)
-                setMessages(decryptedMessages as Message1[]);
+                setMessages(decryptedMessages as Message[]);
                 scrollToBottom();
             }
             else {
@@ -232,9 +239,14 @@ const ChatPage: React.FC = () => {
                 const parsedChats = response[0].map((chat: any) => ({
                     ...chat,
                     id: chat.id.toString(),
+                    participants: chat.participants.map((p: string) => {
+                          return p.startsWith('0x')
+                            ? (p.length === 66 ? p : `0x0${p.substring(2)}`)
+                            : (p.length === 63 ? `0x0${p}` : `0x${p}`);
+                    })
                 }));
                 console.log("chats::", parsedChats)
-                setChats(parsedChats as Chat1[]);
+                setChats(parsedChats as Chat[]);
             }
         } catch (error) {
             console.error("Error fetching chats:", error);
@@ -400,7 +412,7 @@ const ChatPage: React.FC = () => {
                                                     title={
                                                         <Text>
                                                             {chat.participants.find(
-                                                                (p) => p !== account?.address
+                                                                (p) => !compareAddresses(p,account?.address)
                                                             ) || "New Chat"}
                                                         </Text>
                                                     }
@@ -445,10 +457,10 @@ const ChatPage: React.FC = () => {
                                         <Button type="text" icon={<ArrowLeftOutlined />} onClick={() => setSelectedChat(null)} />
                                         Chat Messages (
                                         <Text style={{ wordBreak: 'break-all' }}>
-                                            {selectedChat.participants.find(
-                                                (p) => p !== account?.address
+                                           {selectedChat?.participants.find(
+                                              (p) => !compareAddresses(p,account?.address)
                                             ) || "Unknown User"}
-                                        </Text>
+                                            </Text>
                                         )
                                     </Space>
                                 }
@@ -461,7 +473,7 @@ const ChatPage: React.FC = () => {
                                             style={{ padding: "0 0" }}
                                             renderItem={(messageItem) => (
                                                 <List.Item
-                                                    style={{ padding: '10px 0'  }}
+                                                    style={{ padding: '10px 0' }}
                                                 >
                                                     <div
                                                         style={{

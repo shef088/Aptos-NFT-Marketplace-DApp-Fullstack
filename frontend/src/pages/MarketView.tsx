@@ -76,6 +76,9 @@ const navigate= useNavigate()
           // Decode NFT details and include auction information
           return {
             ...nft,
+            owner: nft.owner.startsWith('0x')
+              ? (nft.owner.length === 66 ? nft.owner : `0x0${nft.owner.substring(2)}`)
+              : (nft.owner.length === 63 ? `0x0${nft.owner}` : `0x${nft.owner}`),
             name: new TextDecoder().decode(hexToUint8Array(nft.name.slice(2))),
             description: new TextDecoder().decode(hexToUint8Array(nft.description.slice(2))),
             uri: new TextDecoder().decode(hexToUint8Array(nft.uri.slice(2))),
