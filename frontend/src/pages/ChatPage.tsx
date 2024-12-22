@@ -11,11 +11,12 @@ import {
     Row,
     Col,
     Divider,
+    Space
 } from "antd";
 import { AptosClient } from "aptos";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { MARKET_PLACE_ADDRESS, MARKET_PLACE_NAME } from "../Constants";
-import { SendOutlined, MessageOutlined } from "@ant-design/icons";
+import { SendOutlined, MessageOutlined, ArrowLeftOutlined } from "@ant-design/icons";
 import CryptoJS from 'crypto-js';
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -57,13 +58,14 @@ const ChatPage: React.FC = () => {
     const [pollingInterval, setPollingInterval] = useState<any>(null);
     const [initialChat, setInitialChat] = useState(false)
     const [chatId, setChatId] = useState<string | null>(null);
+     const [showChatList, setShowChatList] = useState(true);
 
 
     useEffect(() => {
         const checkChatAndInitialize = async () => {
             if(account){
                checkUserInitialization();
-   
+
               if(location.state?.recipient){
                    const chatExists =  await checkExistingChat(account.address, location.state.recipient);
                 }
@@ -83,14 +85,17 @@ const ChatPage: React.FC = () => {
         if (selectedChat) {
             fetchMessages(selectedChat.id);
             startPolling()
+               setShowChatList(false);
         } else {
             setMessages([])
+               setShowChatList(true);
             stopPolling()
         }
-        return () => {
+         return () => {
             stopPolling()
         }
     }, [selectedChat, account]);
+
 
 
     useEffect(() => {
@@ -150,7 +155,7 @@ const ChatPage: React.FC = () => {
             };
 
             const response = await (window as any).aptos.signAndSubmitTransaction(entryFunctionPayload);
-       
+
             await client.waitForTransaction(response.hash);
             message.success("User initialized successfully!");
             setTransactionStatus("success")
@@ -254,7 +259,7 @@ const ChatPage: React.FC = () => {
                 arguments: [recipientAddress],
             };
             const response = await (window as any).aptos.signAndSubmitTransaction(entryFunctionPayload);
- 
+
             await client.waitForTransaction(response.hash);
             message.success("Chat Created Successfully");
             setTransactionStatus("success");
@@ -284,7 +289,7 @@ const ChatPage: React.FC = () => {
                 arguments: [selectedChat.id, encryptedMessage],
             };
             const response = await (window as any).aptos.signAndSubmitTransaction(entryFunctionPayload);
-         
+
             await client.waitForTransaction(response.hash);
             message.success("Message sent successfully!");
             setTransactionStatus("success");
@@ -307,25 +312,25 @@ const ChatPage: React.FC = () => {
                 type_arguments: [],
                 arguments: [userAddress, recipientAddress],
             }) as any;
-            console.log("response:", response) 
+            console.log("response:", response)
             // Handle different cases based on the response
             if (response && response.length > 0 && response[0]?.vec && response[0].vec.length > 0) {
                 // A chat exists, set the chat id.
                 const newChatId = response[0].vec[0];
                 console.log("chatid::", newChatId)
-                 
-                     setChatId(newChatId);
-                
-                 return true; // indicate chat was found
+
+                setChatId(newChatId);
+
+                return true; // indicate chat was found
             } else {
                 // No chat exists, retain the recipient address (as user will create it)
                 setRecipientAddress(recipientAddress);
-               return false; // indicate chat was not found
+                return false; // indicate chat was not found
             }
         } catch (error) {
             console.error("Error checking or creating chat:", error);
             message.error("Failed to check or create chat.");
-          return false; // indicate chat was not found
+            return false; // indicate chat was not found
         }
     };
 
@@ -369,7 +374,8 @@ const ChatPage: React.FC = () => {
                 </div>
             ) : (
                 <Row gutter={[16, 16]} style={{ width: "100%", maxWidth: "800px" }}>
-                    <Col span={8}>
+                    {showChatList && (
+                        <Col xs={24} sm={24} style={{ marginBottom: 16 }}>
                         <Card title="Chats" style={{ height: "100%", overflowY: "auto" }} loading={chatsLoading}>
                             <List
                                 itemLayout="horizontal"
@@ -414,41 +420,58 @@ const ChatPage: React.FC = () => {
                             </Button>
                         </Card>
                     </Col>
-                    <Col span={16}>
-                        <Card title={selectedChat ? "Chat Messages" : "Select a chat"} style={{ height: "100%", overflowY: "auto" }} loading={messagesLoading}>
-                            {selectedChat ? (
+                    )}
+
+                   {!showChatList && selectedChat && (
+                    <Col xs={24} sm={24}>
+                         <Card
+                            title={
+                                <Space>
+                                <Button type="text" icon={<ArrowLeftOutlined />} onClick={() => setSelectedChat(null)} />
+                                Chat Messages (
+              <Text style={{ wordBreak: 'break-all' }}>
+                {selectedChat.participants.find(
+                  (p) => p !== account?.address
+                ) || "Unknown User"}
+              </Text>
+            )
+                                </Space>
+                            }
+                             style={{ height: "100%", overflowY: "auto" }} loading={messagesLoading}>
                                 <>
                                     <div ref={messageListRef} style={{ maxHeight: '400px', overflowY: 'auto', paddingRight: '10px' }}>
                                         <List
                                             itemLayout="vertical"
                                             dataSource={messages}
+                                            style={{ padding: "0 0" }}
                                             renderItem={(messageItem) => (
                                                 <List.Item
                                                     style={{ padding: '10px 0' }}
                                                 >
-                                                    <div
+                                                     <div
                                                         style={{
-                                                            display: 'flex',
-                                                            maxWidth: '50%',
-                                                            borderRadius: '10px',
-                                                            padding: '4px 15px',
-                                                            marginBottom: '8px',
-                                                            position: 'relative',
-                                                            clear: 'both',
-                                                            justifyContent: messageItem.sender === account?.address ? 'end' : 'start',
-                                                            backgroundColor: messageItem.sender === account?.address ? '#dcf8c6' : '#f0f0f0',
-                                                            marginLeft: messageItem.sender === account?.address ? 'auto' : '0',
-                                                            marginRight: messageItem.sender === account?.address ? '0' : 'auto',
-                                                            textAlign: messageItem.sender === account?.address ? 'right' : 'left',
-                                                        }}
-                                                    >
+                                                                display: 'flex',
+                                                                maxWidth: '100%',
+                                                                borderRadius: '10px',
+                                                                padding: '4px 15px',
+                                                                marginBottom: '8px',
+                                                                position: 'relative',
+                                                                clear: 'both',
+                                                                justifyContent: messageItem.sender === account?.address ? 'end' : 'start',
+                                                                backgroundColor: messageItem.sender === account?.address ? '#dcf8c6' : '#f0f0f0',
+                                                                marginLeft: messageItem.sender === account?.address ? 'auto' : '0',
+                                                                marginRight: messageItem.sender === account?.address ? '0' : 'auto',
+                                                                textAlign: messageItem.sender === account?.address ? 'right' : 'left',
+                                                                flexWrap: "wrap",
+                                                            }}
+                                                        >
                                                         <div
                                                             style={{
                                                                 display: 'flex',
                                                                 flexDirection: 'column',
                                                             }}
                                                         >
-                                                            <div style={{ display: "flex", alignItems: 'center', justifyContent: messageItem.sender === account?.address ? 'flex-end' : 'flex-start' }}>
+                                                             <div style={{ display: "flex", alignItems: 'center', justifyContent: messageItem.sender === account?.address ? 'flex-end' : 'flex-start' }}>
                                                                 <Text style={{ whiteSpace: "pre-line" }} >{messageItem.content}</Text>
                                                             </div>
                                                             <div
@@ -472,14 +495,14 @@ const ChatPage: React.FC = () => {
                                     </div>
                                     <Divider />
                                     <Row gutter={16}>
-                                        <Col span={18}>
+                                        <Col xs={18} sm={18}>
                                             <Input
                                                 placeholder="Enter message"
                                                 value={newMessage}
                                                 onChange={(e) => setNewMessage(e.target.value)}
                                             />
                                         </Col>
-                                        <Col span={6}>
+                                        <Col xs={6} sm={6}>
                                             <Button
                                                 type="primary"
                                                 onClick={handleSendMessage}
@@ -491,22 +514,9 @@ const ChatPage: React.FC = () => {
                                         </Col>
                                     </Row>
                                 </>
-                            ) : (
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                        height: "100%",
-                                    }}
-                                >
-                                    <Text type="secondary" style={{ fontSize: "1.2em" }}>
-                                        Select a chat to view messages.
-                                    </Text>
-                                </div>
-                            )}
                         </Card>
                     </Col>
+                    )}
                 </Row>
             )}
         </div>
