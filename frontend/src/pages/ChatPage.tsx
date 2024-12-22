@@ -58,21 +58,21 @@ const ChatPage: React.FC = () => {
     const [pollingInterval, setPollingInterval] = useState<any>(null);
     const [initialChat, setInitialChat] = useState(false)
     const [chatId, setChatId] = useState<string | null>(null);
-     const [showChatList, setShowChatList] = useState(true);
+    const [showChatList, setShowChatList] = useState(true);
 
 
     useEffect(() => {
         const checkChatAndInitialize = async () => {
-            if(account){
-               checkUserInitialization();
+            if (account) {
+                checkUserInitialization();
 
-              if(location.state?.recipient){
-                   const chatExists =  await checkExistingChat(account.address, location.state.recipient);
+                if (location.state?.recipient) {
+                    const chatExists = await checkExistingChat(account.address, location.state.recipient);
                 }
-             }
-       };
-       checkChatAndInitialize();
-   }, [account, location]);
+            }
+        };
+        checkChatAndInitialize();
+    }, [account, location]);
 
     useEffect(() => {
         if (account && isInitialized) {
@@ -85,13 +85,13 @@ const ChatPage: React.FC = () => {
         if (selectedChat) {
             fetchMessages(selectedChat.id);
             startPolling()
-               setShowChatList(false);
+            setShowChatList(false);
         } else {
             setMessages([])
-               setShowChatList(true);
+            setShowChatList(true);
             stopPolling()
         }
-         return () => {
+        return () => {
             stopPolling()
         }
     }, [selectedChat, account]);
@@ -208,7 +208,7 @@ const ChatPage: React.FC = () => {
             }
             else {
                 setMessages([]); // clear messages if empty
-             }
+            }
         } catch (error) {
             console.error("Error fetching messages:", error);
             message.error("Failed to fetch messages.");
@@ -233,6 +233,7 @@ const ChatPage: React.FC = () => {
                     ...chat,
                     id: chat.id.toString(),
                 }));
+                console.log("chats::", parsedChats)
                 setChats(parsedChats as Chat1[]);
             }
         } catch (error) {
@@ -376,68 +377,82 @@ const ChatPage: React.FC = () => {
                 <Row gutter={[16, 16]} style={{ width: "100%", maxWidth: "800px" }}>
                     {showChatList && (
                         <Col xs={24} sm={24} style={{ marginBottom: 16 }}>
-                        <Card title="Chats" style={{ height: "100%", overflowY: "auto" }} loading={chatsLoading}>
-                            <List
-                                itemLayout="horizontal"
-                                dataSource={chats}
-                                renderItem={(chat) => (
-                                    <List.Item
-                                        onClick={() => {
-                                            setSelectedChat(chat);
-                                        }}
-                                        style={{
-                                            cursor: "pointer",
-                                            backgroundColor:
-                                                selectedChat?.id === chat.id ? "#f0f0f0" : "white",
-                                        }}
-                                    >
-                                        <List.Item.Meta
-                                            avatar={<Avatar icon={<MessageOutlined />} />}
-                                            title={
-                                                <Text>
-                                                    {chat.participants.find(
-                                                        (p) => p !== account?.address
-                                                    ) || "New Chat"}
-                                                </Text>
-                                            }
-                                        />
-                                    </List.Item>
-                                )}
-                            />
-                            <Divider />
-                            <Input
-                                placeholder="Recipient Address"
-                                value={recipientAddress}
-                                onChange={(e) => setRecipientAddress(e.target.value)}
-                            />
-                            <Button
-                                type="primary"
-                                style={{ marginTop: "10px" }}
-                                onClick={handleCreateChat}
-                                block
-                            >
-                                Create Chat
-                            </Button>
-                        </Card>
-                    </Col>
+                            <Card title="Chats" style={{ height: "100%", overflowY: "auto" }} loading={chatsLoading}>
+                                <List
+                                    itemLayout="horizontal"
+                                    dataSource={chats}
+                                    renderItem={(chat) => {
+                                        const lastMessage = chat.messages && chat.messages.length > 0 ? chat.messages[chat.messages.length - 1] : null;
+                                        const lastMessageTime = lastMessage ? new Date(lastMessage.timestamp * 1000).toLocaleString() : '';
+                                        return (
+                                            <List.Item
+                                                onClick={() => {
+                                                    setSelectedChat(chat);
+                                                }}
+                                                style={{
+                                                    cursor: "pointer",
+                                                    backgroundColor:
+                                                        selectedChat?.id === chat.id ? "#f0f0f0" : "white",
+                                                }}
+                                            >
+                                                <List.Item.Meta
+                                                    avatar={<Avatar icon={<MessageOutlined />} />}
+                                                    title={
+                                                        <Text>
+                                                            {chat.participants.find(
+                                                                (p) => p !== account?.address
+                                                            ) || "New Chat"}
+                                                        </Text>
+                                                    }
+                                                    description={
+                                                        <Space direction="vertical">
+                                                            {lastMessage && (
+                                                                <Text type="secondary" style={{ wordBreak: 'break-all' }}>
+                                                                    {decryptMessage(lastMessage.content)}
+                                                                </Text>
+                                                            )}
+                                                            {lastMessageTime && <Text type="secondary" style={{ fontSize: '0.8em' }}>{lastMessageTime}</Text>}
+                                                        </Space>
+                                                    }
+                                                />
+                                            </List.Item>
+                                        )
+                                    }}
+                                />
+                                <Divider />
+                                <Input
+                                    placeholder="Recipient Address"
+                                    value={recipientAddress}
+                                    onChange={(e) => setRecipientAddress(e.target.value)}
+                                />
+                                <Button
+                                    type="primary"
+                                    style={{ marginTop: "10px" }}
+                                    onClick={handleCreateChat}
+                                    block
+                                >
+                                    Create Chat
+                                </Button>
+                            </Card>
+                        </Col>
                     )}
 
-                   {!showChatList && selectedChat && (
-                    <Col xs={24} sm={24}>
-                         <Card
-                            title={
-                                <Space>
-                                <Button type="text" icon={<ArrowLeftOutlined />} onClick={() => setSelectedChat(null)} />
-                                Chat Messages (
-              <Text style={{ wordBreak: 'break-all' }}>
-                {selectedChat.participants.find(
-                  (p) => p !== account?.address
-                ) || "Unknown User"}
-              </Text>
-            )
-                                </Space>
-                            }
-                             style={{ height: "100%", overflowY: "auto" }} loading={messagesLoading}>
+                    {!showChatList && selectedChat && (
+                        <Col xs={24} sm={24}>
+                            <Card
+                                title={
+                                    <Space>
+                                        <Button type="text" icon={<ArrowLeftOutlined />} onClick={() => setSelectedChat(null)} />
+                                        Chat Messages (
+                                        <Text style={{ wordBreak: 'break-all' }}>
+                                            {selectedChat.participants.find(
+                                                (p) => p !== account?.address
+                                            ) || "Unknown User"}
+                                        </Text>
+                                        )
+                                    </Space>
+                                }
+                                style={{ height: "100%", overflowY: "auto" }} loading={messagesLoading}>
                                 <>
                                     <div ref={messageListRef} style={{ maxHeight: '400px', overflowY: 'auto', paddingRight: '10px' }}>
                                         <List
@@ -446,32 +461,37 @@ const ChatPage: React.FC = () => {
                                             style={{ padding: "0 0" }}
                                             renderItem={(messageItem) => (
                                                 <List.Item
-                                                    style={{ padding: '10px 0' }}
+                                                    style={{ padding: '10px 0'  }}
                                                 >
-                                                     <div
+                                                    <div
                                                         style={{
-                                                                display: 'flex',
-                                                                maxWidth: '100%',
-                                                                borderRadius: '10px',
-                                                                padding: '4px 15px',
-                                                                marginBottom: '8px',
-                                                                position: 'relative',
-                                                                clear: 'both',
-                                                                justifyContent: messageItem.sender === account?.address ? 'end' : 'start',
-                                                                backgroundColor: messageItem.sender === account?.address ? '#dcf8c6' : '#f0f0f0',
-                                                                marginLeft: messageItem.sender === account?.address ? 'auto' : '0',
-                                                                marginRight: messageItem.sender === account?.address ? '0' : 'auto',
-                                                                textAlign: messageItem.sender === account?.address ? 'right' : 'left',
-                                                                flexWrap: "wrap",
-                                                            }}
-                                                        >
+                                                            display: 'flex',
+                                                            maxWidth: '70%',
+                                                            borderRadius: '10px',
+                                                            padding: '4px 15px',
+                                                            marginBottom: '8px',
+                                                            position: 'relative',
+                                                            clear: 'both',
+                                                            justifyContent: messageItem.sender === account?.address ? 'end' : 'start',
+                                                          
+                                                            marginLeft: messageItem.sender === account?.address ? 'auto' : '0',
+                                                            marginRight: messageItem.sender === account?.address ? '0' : 'auto',
+                                                            textAlign: messageItem.sender === account?.address ? 'right' : 'left',
+                                                            flexWrap: "wrap",
+                                                        }}
+                                                    >
                                                         <div
                                                             style={{
                                                                 display: 'flex',
                                                                 flexDirection: 'column',
+                                                                backgroundColor: messageItem.sender === account?.address ? '#dcf8c6' : '#f0f0f0',
+                                                                borderRadius: '10px',
+                                                               
+                                                                padding: '4px 15px',
+                                                            marginBottom: '8px',
                                                             }}
                                                         >
-                                                             <div style={{ display: "flex", alignItems: 'center', justifyContent: messageItem.sender === account?.address ? 'flex-end' : 'flex-start' }}>
+                                                            <div style={{ display: "flex", alignItems: 'center', justifyContent: messageItem.sender === account?.address ? 'flex-end' : 'flex-start' }}>
                                                                 <Text style={{ whiteSpace: "pre-line" }} >{messageItem.content}</Text>
                                                             </div>
                                                             <div
@@ -514,8 +534,8 @@ const ChatPage: React.FC = () => {
                                         </Col>
                                     </Row>
                                 </>
-                        </Card>
-                    </Col>
+                            </Card>
+                        </Col>
                     )}
                 </Row>
             )}
