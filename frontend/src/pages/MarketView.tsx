@@ -72,7 +72,7 @@ const navigate= useNavigate()
           const auc_2 = auc ? auc['vec'] : [];  // Extract the 'vec' array which holds auction details
           const auction = auc_2.length ? auc_2[0] : null;  // Get the first auction if available
           
-          console.log("got it", auction);
+           
           
           // Decode NFT details and include auction information
           return {

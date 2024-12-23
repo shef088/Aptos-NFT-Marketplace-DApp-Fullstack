@@ -154,7 +154,7 @@ const MyNFTs: React.FC = () => {
               actions={[
                 <div style={{ display: 'flex',  alignItems:"center", justifyContent:"space-evenly" }}>
                   {nft.auction ? (
-                      <Button type="link"  disabled={nft.auction?.isExpired} onClick={() => navigate(`/nft-detail/${nft.id}`)}>
+                      <Button type="primary"  disabled={nft.auction?.isExpired} onClick={() => navigate(`/nft-detail/${nft.id}`)}>
                           {nft.auction?.isExpired ? "Expired Auction": "Ongoing Auction"}
                       </Button>
                   ) : nft.for_sale ? (

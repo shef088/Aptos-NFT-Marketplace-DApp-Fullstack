@@ -34,7 +34,7 @@ const Analytics = () => {
         try {
              // Replace with your API to fetch the conversion rate
             const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=aptos&vs_currencies=usd');
-            console.log("response::", response)
+           
             if (response.ok) {
                 const data = await response.json();
                 console.log("response::", data.aptos.usd)
@@ -61,25 +61,25 @@ const Analytics = () => {
           }) as any;
           console.log("data::", data);
       
-          const transformedAnalytics = {
+           const transformedAnalytics = {
             total_nfts_sold: parseInt(data[0], 10),
-            total_trading_volume: (((parseInt(data[1], 10) / 100000000)* aptToUsdRate).toFixed(2)),
+            total_trading_volume: (parseInt(data[1], 10) / 100000000), // Convert to APT
             trending_nfts: data[2], // Array of NFT IDs
             active_users: data[3],
-            
+             sales_volume_over_time: data[4], // Array of SalesVolumeEntry
           };
-          const sales_volume_over_time= data[4] // Array of SalesVolumeEntry
-     
-        
-         // Decode sales_volume_over_time into a readable format
-        const salesVolumeOverTime =  sales_volume_over_time.map((encoded:any) => {
+
+          console.log("transformedAnalytics::", transformedAnalytics);
+        // Decode sales_volume_over_time into a readable format
+        const salesVolumeOverTime =  transformedAnalytics.sales_volume_over_time.map((encoded:any) => {
           return decodeSalesVolume(encoded, aptToUsdRate); // Decode each SalesVolumeEntry
         });
+
     const analytics ={
       ...transformedAnalytics,
       salesVolumeOverTime,
   }
-  console.log("analytics::", analytics)
+  console.log("data::", analytics)
            setAnalytics(analytics);
       
           // Fetch details for trending NFTs
