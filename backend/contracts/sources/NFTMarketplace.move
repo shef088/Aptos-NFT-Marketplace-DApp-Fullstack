@@ -26,6 +26,7 @@ module NFTMarketplace {
     const E_UNAUTHORIZED_CHAT_ACCESS: u64 = 600;
     const E_CHAT_DOES_NOT_EXIST: u64 = 601;
     const E_CHAT_ALREADY_EXISTS_BETWEEN_USERS: u64 = 602;
+    const E_CHAT_SENDER_SAME_AS_RECIPIENT: u64 = 603;
     
     const MARKETPLACE_FEE_PERCENT: u64 = 2; // 2% fee
 
@@ -683,6 +684,9 @@ public entry fun create_chat(
     if (!exists<SharedChats>(sender)) {
         initialize_shared_chats(account);
     };
+
+    // Check that sender is not recipient
+        assert!(sender != recipient, E_CHAT_SENDER_SAME_AS_RECIPIENT);
 
     // Check if a chat between sender and recipient already exists
     let chat_exists  = get_chat_id_bool(sender, recipient);
