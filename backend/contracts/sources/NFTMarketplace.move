@@ -27,7 +27,8 @@ module NFTMarketplace {
     const E_CHAT_DOES_NOT_EXIST: u64 = 601;
     const E_CHAT_ALREADY_EXISTS_BETWEEN_USERS: u64 = 602;
     const E_CHAT_SENDER_SAME_AS_RECIPIENT: u64 = 603;
-    
+     const E_CHAT_RECIPIENT_HAS_NOT_TURNED_ON_THEIR_CHAT: u64 = 604;
+
     const MARKETPLACE_FEE_PERCENT: u64 = 2; // 2% fee
 
     struct NFT has store, key, copy {
@@ -680,10 +681,13 @@ public entry fun create_chat(
     let sender = signer::address_of(account);
     let chat_id = timestamp::now_seconds();
 
-    // Ensure the shared chats resource exists for both participants
+    // Ensure the shared chats resource exists for account
     if (!exists<SharedChats>(sender)) {
         initialize_shared_chats(account);
     };
+
+ // Ensure the shared chats resource exists for recipient
+        assert!(exists<SharedChats>(recipient), E_CHAT_RECIPIENT_HAS_NOT_TURNED_ON_THEIR_CHAT);
 
     // Check that sender is not recipient
         assert!(sender != recipient, E_CHAT_SENDER_SAME_AS_RECIPIENT);
