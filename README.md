@@ -13,7 +13,7 @@ curl -fsSL "https://aptos.dev/scripts/install_cli.py" | python3
 aptos info
 
 
-Open your Petra Wallet, copy your account address, and insert it in place of your-marketplace-address-here in:
+Open your Petra Wallet, copy your account address, and insert it in place of your-marketplace-address-here in Move.toml and also NFTMarketplace.move file:
 
 NFTMarketplace = "your-marketplace-address-here"
 
