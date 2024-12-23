@@ -1,10 +1,9 @@
 import React from "react";
 import { Modal, Button, message } from "antd";
-import { AptosClient } from "aptos";
 import { MARKET_PLACE_ADDRESS, MARKET_PLACE_NAME } from "../Constants";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
+import { client } from "../utils/aptoClientUtil";
 
-const client = new AptosClient("https://fullnode.devnet.aptoslabs.com/v1");
 
 interface ConfirmPurchaseModalProps {
   isVisible: boolean;

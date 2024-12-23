@@ -6,10 +6,11 @@ import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { motion } from "framer-motion"; // Animation library
 import { fetchNFTDataUtil } from "../utils/fetchNFTData";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from "recharts"; // Adding BarChart
+import { client } from "../utils/aptoClientUtil";
 
 const { Meta } = Card;
 
-const client = new AptosClient("https://fullnode.devnet.aptoslabs.com/v1");
+ 
 const decodeSalesVolume = (encoded:any) => {
   // Assuming each encoded entry has 'time' and 'volume' properties
   const time = encoded.time; // Unix timestamp

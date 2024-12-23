@@ -28,9 +28,10 @@ import ListForSaleModal from "../components/ListForSaleModal";
 import TransferNFTModal from "../components/TransferNFTModal";
 import { fetchNFTDataUtil } from "../utils/fetchNFTData";
 import { rarityColors, rarityLabels } from "../utils/rarityUtils";
+import { client } from "../utils/aptoClientUtil";
 
 const { Title, Paragraph, Text } = Typography;
-const client = new AptosClient("https://fullnode.devnet.aptoslabs.com/v1");
+ 
 
 
 const NFTDetail: React.FC = () => {

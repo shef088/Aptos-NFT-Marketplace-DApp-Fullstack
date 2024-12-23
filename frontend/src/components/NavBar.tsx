@@ -27,11 +27,12 @@ import {
     PlusOutlined,
 } from "@ant-design/icons";
 import { Link, useLocation } from "react-router-dom";
+import { client } from '../utils/aptoClientUtil';
 
 const { Header } = Layout;
 const { Text } = Typography;
 
-const client = new AptosClient("https://fullnode.devnet.aptoslabs.com/v1");
+ 
 
 interface NavBarProps {
     onMintNFTClick: () => void;

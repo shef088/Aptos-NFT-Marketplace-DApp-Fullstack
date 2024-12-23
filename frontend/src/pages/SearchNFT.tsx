@@ -6,10 +6,11 @@ import { useNavigate } from "react-router-dom";
 import { fetchNFTDataUtil } from "../utils/fetchNFTData";
 import { rarityColors, rarityLabels } from "../utils/rarityUtils";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
+import { client } from "../utils/aptoClientUtil";
 
 const { Search } = Input;
 const { Title, Paragraph, Text } = Typography;
-const client = new AptosClient("https://fullnode.devnet.aptoslabs.com/v1");
+ 
 
 const SearchNFT: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState<string>("");

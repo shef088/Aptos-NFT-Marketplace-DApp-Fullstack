@@ -3,8 +3,8 @@ import { Modal, Input, Button, message } from "antd";
 import { AptosClient } from "aptos";
 import { MARKET_PLACE_ADDRESS, MARKET_PLACE_NAME } from "../Constants";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
-
-const client = new AptosClient("https://fullnode.devnet.aptoslabs.com/v1");
+import { client } from '../utils/aptoClientUtil';
+ 
 
 interface ListForSaleModalProps {
   isVisible: boolean;

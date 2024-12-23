@@ -3,11 +3,11 @@ import { Button, Input, Select, message } from "antd";
 import { AptosClient } from "aptos";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { MARKET_PLACE_ADDRESS, MARKET_PLACE_NAME } from "../Constants";
+import { client } from "../utils/aptoClientUtil";
 
 const { Option } = Select;
 
-// Initialize Aptos Client
-const client = new AptosClient("https://fullnode.devnet.aptoslabs.com/v1");
+ 
 
 const Transfer = () => {
   const { account } = useWallet();

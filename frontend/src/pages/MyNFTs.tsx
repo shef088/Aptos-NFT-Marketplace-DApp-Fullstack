@@ -11,9 +11,8 @@ import ListForSaleModal from "../components/ListForSaleModal";
 import { fetchNFTDataUtil } from "../utils/fetchNFTData";  
 import { rarityColors, rarityLabels } from "../utils/rarityUtils";  
 import { NFT } from "../types/nftType";
-
-const client = new AptosClient("https://fullnode.devnet.aptoslabs.com/v1");
-
+import { client } from "../utils/aptoClientUtil";
+ 
  
 const truncateAddress = (address: string, start = 6, end = 4) => {
   return `${address.slice(0, start)}...${address.slice(-end)}`;

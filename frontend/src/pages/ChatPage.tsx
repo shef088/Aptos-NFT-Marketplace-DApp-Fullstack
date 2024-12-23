@@ -19,10 +19,11 @@ import { MARKET_PLACE_ADDRESS, MARKET_PLACE_NAME } from "../Constants";
 import { SendOutlined, MessageOutlined, ArrowLeftOutlined } from "@ant-design/icons";
 import CryptoJS from 'crypto-js';
 import { useLocation, useNavigate } from "react-router-dom";
+import { client } from "../utils/aptoClientUtil";
 
 const { Text, Title } = Typography;
 
-const client = new AptosClient("https://fullnode.devnet.aptoslabs.com/v1");
+ 
 
 interface Chat {
     id: string;

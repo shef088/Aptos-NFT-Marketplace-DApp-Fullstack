@@ -7,7 +7,6 @@ import NavBar from "./components/NavBar";
 import MarketView from "./pages/MarketView";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MyNFTs from "./pages/MyNFTs";
-import { AptosClient } from "aptos";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { MARKET_PLACE_ADDRESS, MARKET_PLACE_NAME } from "./Constants";
 import AuctionPage from "./pages/AuctionPage";
@@ -16,7 +15,8 @@ import NFTDetail from "./pages/NFTDetail";
 import Analytics from "./pages/Analytics";
 import ChatPage from "./pages/ChatPage";
 import SearchNFT from "./pages/SearchNFT";
-const client = new AptosClient("https://fullnode.devnet.aptoslabs.com/v1");
+import { client } from "./utils/aptoClientUtil";
+ 
  
 function App() {
   const { signAndSubmitTransaction } = useWallet();

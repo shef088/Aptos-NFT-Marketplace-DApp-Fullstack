@@ -10,7 +10,7 @@ import PlaceBidModal from "../components/PlaceBidModal";
 import { rarityColors, rarityLabels, truncateAddress } from "../utils/rarityUtils";
 import { Auction } from "../types/nftType";
 import { fetchNFTDataUtil } from "../utils/fetchNFTData";
-
+import { client } from "../utils/aptoClientUtil";
  
 const AuctionsPage = () => {
   const { account } = useWallet();
@@ -23,7 +23,7 @@ const AuctionsPage = () => {
     const [loading, setLoading] = useState<boolean>(true);
   
   const navigate = useNavigate();
-  const client = new AptosClient("https://fullnode.devnet.aptoslabs.com/v1");
+ 
   const pageSize = 8;
   
   const fetchAuctions = useCallback(async () => {

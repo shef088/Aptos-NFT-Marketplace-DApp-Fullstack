@@ -3,7 +3,8 @@ import { Modal, Input, Form, message, Button } from 'antd';
 import { AptosClient } from "aptos";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { MARKET_PLACE_ADDRESS, MARKET_PLACE_NAME } from "../Constants";
-const client = new AptosClient("https://fullnode.devnet.aptoslabs.com/v1");
+import { client } from '../utils/aptoClientUtil';
+ 
 
 interface TransferNFTModalProps {
     isVisible: boolean;

@@ -6,11 +6,12 @@ import { MARKET_PLACE_ADDRESS, MARKET_PLACE_NAME } from "../Constants";
 import { useNavigate } from "react-router-dom";
 import ConfirmPurchaseModal from "../components/ConfirmPurchaseModal";
 import { rarityColors, rarityLabels, truncateAddress } from "../utils/rarityUtils";  
+import { client } from "../utils/aptoClientUtil";
 
 const { Title, Text } = Typography;
 const { Meta } = Card;
 
-const client = new AptosClient("https://fullnode.devnet.aptoslabs.com/v1");
+ 
 
 type NFT = {
   id: number;
