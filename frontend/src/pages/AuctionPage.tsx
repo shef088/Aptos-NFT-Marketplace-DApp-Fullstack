@@ -157,6 +157,7 @@ const AuctionsPage = () => {
                    ,
                  nft.owner === account?.address && (
                      <Button
+                     disabled={!nft.auction.isExpired}
                        type="link"
                        danger
                        onClick={() => handleEndAuction(nft.id)}

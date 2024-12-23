@@ -311,6 +311,7 @@ const NFTDetail: React.FC = () => {
                                                     type="primary"
                                                     danger
                                                     block
+                                                    disabled={!nftDetails.isExpired}
                                                    style={buttonStyle}
                                                     onClick={() => handleEndAuction(nftDetails.id)}
                                                    icon={<ClockCircleOutlined />}
@@ -398,6 +399,7 @@ const NFTDetail: React.FC = () => {
                                                   style={buttonStyle}
                                                 onClick={() => handleTransferClick()}
                                                 icon={<UserOutlined />}
+                                                disabled={nftDetails.for_sale}
                                             >
                                                Transfer NFT
                                           </Button>
