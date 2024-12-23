@@ -207,6 +207,9 @@ const ChatPage: React.FC = () => {
             if (response && response.length > 0 && response[0].length > 0) {
                 const decryptedMessages = await Promise.all(response[0].map(async (msg: any) => ({
                     ...msg,
+                   sender: msg.sender.startsWith('0x')
+                        ? (msg.sender.length === 66 ? msg.sender : `0x0${msg.sender.substring(2)}`)
+                        : (msg.sender.length === 63 ? `0x0${msg.sender}` : `0x${msg.sender}`),
                     content: decryptMessage(msg.content),
                 })));
                 setMessagesLoading(true)
