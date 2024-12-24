@@ -311,12 +311,12 @@ const NFTDetail: React.FC = () => {
                                                     type="primary"
                                                     danger
                                                     block
-                                                    disabled={!nftDetails.isExpired}
+                                                    disabled={!auctionData.isExpired}
                                                    style={buttonStyle}
                                                     onClick={() => handleEndAuction(nftDetails.id)}
                                                    icon={<ClockCircleOutlined />}
                                                 >
-                                                      End Auction
+                                                      End Auction 
                                                </Button>
                                            ) : (
                                              <Button
