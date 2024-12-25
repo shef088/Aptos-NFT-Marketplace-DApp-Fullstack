@@ -1,0 +1,3 @@
+export const MARKET_PLACE_ADDRESS="0x381909e7b424111da9b8626a84bd6ce581c5efd8eeec2accefe085e4bd335908"
+export const MARKET_PLACE_NAME="NFTMarketplace"
+ 
